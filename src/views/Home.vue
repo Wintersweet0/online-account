@@ -34,7 +34,7 @@
     <div class="add" @click="addBill">
       <van-icon name="records" />
     </div>
-    <PopAdd ref="PopAddRef"></PopAdd>
+    <PopAdd ref="PopAddRef" @refresh="getBillList"></PopAdd>
     <PopCategory ref="PopCategoryRef" @selectCategory="selectCategory"></PopCategory>
     <PopMonth ref="PopMonthRef" :currentTime="currentTime" @selectMonth="selectMonth"></PopMonth>
   </div>
@@ -105,14 +105,14 @@ export default {
     const calcTotal = () => {
       state.totalExpense = state.list.reduce((total, cur) => {
         return total + cur.bills.filter((item) => {
-          return item.type == 1
+          return item.type == '1'
         }).reduce((pre, c) => {
           return pre + Number(c.num)
         }, 0)
       }, 0)
       state.totalIncome = state.list.reduce((total, cur) => {
         return total + cur.bills.filter((item) => {
-          return item.type == 0
+          return item.type == '0'
         }).reduce((pre, c) => {
           return pre + Number(c.num)
         }, 0)
@@ -149,6 +149,7 @@ export default {
       PopMonthRef,
       PopMonthRefToggle,
       addBill,
+      getBillList,
       onLoad,
       onRefresh,
       selectCategory,

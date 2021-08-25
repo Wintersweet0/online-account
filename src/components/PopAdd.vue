@@ -91,6 +91,7 @@ export default {
     })
 
     const toggle = () => {
+      //将各项数据赋上当前账目的值
       if(props.bill._id){
         state.payType = props.bill.type
         state.date = new Date(props.bill.time)
@@ -142,7 +143,7 @@ export default {
         remark: state.remark,
         time: fmtDate2,
       }
-      if(state.type == 1){
+      if(state.payType == 1){
         params.category = state.category1
       }else{
         params.category = state.category2

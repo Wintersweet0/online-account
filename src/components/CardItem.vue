@@ -43,18 +43,18 @@ export default {
     const calcItem = () => {
       state.expense = props.bill.bills
         .filter((item) => {
-          return item.type == 1
+          return item.type == '1'
         })
         .reduce((item, cur) => {
-          return item + Number(cur.num)
+          return item + cur.num
         },0)
 
       state.income = props.bill.bills
         .filter((item) => {
-          return item.type == 0
+          return item.type == '0'
         })
         .reduce((item, cur) => {
-          return item + Number(cur.num)
+          return item + cur.num
         },0)
     }
     const goToBill = (item) => {

@@ -75,7 +75,7 @@ export function del(url, params, ...config){
 }
 
 export function get(url, params, ...config){
-  // console.log('config', config);
+  // console.log('params', params);
   return service.get(url, {
       params,
       ...config

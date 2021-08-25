@@ -5,8 +5,21 @@ import Bill from '../views/Bill.vue'
 const routes = [
   {
     path: '/',
-    name: 'home',
-    component: Home
+    name: 'index',
+    redirect: '/home',
+    component: () => import('@/layout/index'),
+    children: [
+      {
+        path: 'home',
+        name: 'home',
+        component: () => import('@/views/Home')
+      },
+      {
+        path: 'statistics',
+        name: 'statistics',
+        component: () => import('@/views/Statistics')
+      },
+    ]
   },
   {
     path: '/bill',
