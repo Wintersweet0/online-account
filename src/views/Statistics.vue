@@ -1,7 +1,7 @@
 <!--  -->
 <template>
   <div class="wrap">
-    <header class="header">
+    <div class="header">
       <div class="date-wrap">
         <div @click="showDay = true" class="time">
           {{formatMonth(currentTime)}}
@@ -12,10 +12,10 @@
         </div>
       </div>
       <div class="data-wrap">
-        <span>总支出￥{{}}</span>
-        <span>总收入￥{{}}</span>
+        <span>总支出￥{{totalExpense.toFixed(2)}}</span>
+        <span style="margin-left: 10px">总收入￥{{totalIncome.toFixed(2)}}</span>
       </div>
-    </header>
+    </div>
     <div class="makeup">
       <div class="makeupHead">
         <div class="makeupType">
@@ -73,6 +73,8 @@ export default {
       showDay: false,
       currentTime: new Date(),
       trendChartTime: new Date(),
+      totalExpense: 0,
+      totalIncome: 0,
       makeupChartType: 1,
       trendChartType: 1,
       expenseCategoryList: [],
@@ -81,11 +83,11 @@ export default {
       incomeTrendList: [],
     });
     
-    const chooseDay = (value) => {
+    const chooseDay = async (value) => {
       state.currentTime = value
-      // getData()
-      // makeupChart();
-      // trendChart();
+      await getData()
+      makeupChart();
+      trendChart();
       state.showDay = false
     }
 
@@ -96,11 +98,11 @@ export default {
       let params = {
         date: formatMonth(state.currentTime),
       };
-      const data1 = await get(
+      let data1 = await get(
         "https://qcz8mn.fn.thelarkcloud.com/queryByMonthReturnCategory",
         params
       );
-      const data2 = await get(
+      let data2 = await get(
         "https://qcz8mn.fn.thelarkcloud.com/queryBillByMonth",
         params
       );
@@ -142,6 +144,21 @@ export default {
       data2.data.sort((a, b) => {
         return parseInt(a.time.slice(-2)) > parseInt(b.time.slice(-2)) ? -1 : 1;
       });
+
+      state.totalExpense = data2.data.reduce((total, cur) => {
+        return total + cur.bills.filter((item) => {
+          return item.type == '1'
+        }).reduce((pre, c) => {
+          return pre + c.num
+        }, 0)
+      }, 0)
+      state.totalIncome = data2.data.reduce((total, cur) => {
+        return total + cur.bills.filter((item) => {
+          return item.type == '0'
+        }).reduce((pre, c) => {
+          return pre + c.num
+        }, 0)
+      }, 0)
 
       data2.data.map((item) => {
         let index = parseInt(item.time.slice(-2))-1
@@ -194,7 +211,7 @@ export default {
       trendChart();
     });
     const makeupChart = () => {
-      const makeupChart = Highcharts.chart("makeupChart", {
+      let makeupChart = Highcharts.chart("makeupChart", {
         chart:{
           height: 200,
         },
@@ -245,12 +262,12 @@ export default {
           },
         ],
       });
-      console.log('makeupChart.point', makeupChart);
     };
 
     const trendChart = () => {
-      const trendChart = new Highcharts.Chart("trendChart", {
+      let trendChart = new Highcharts.Chart("trendChart", {
         chart:{
+          zoomType: 'x',
           height: 350,
         },
         title: {
@@ -284,10 +301,16 @@ export default {
         },
         series: [
           {
+            type: 'area',
             name: "收支趋势",
             data: state.trendChartType == 1 ? state.expenseTrendList : state.incomeTrendList,
           },
         ],
+        tooltip: {
+          pointFormat: "<span style=\"color:{point.color}\">●</span> 金额: <b>{point.y:.2f}</b><br/>",
+          valueSuffix: ' 元',
+          shared: true,
+        },
         responsive: {
           rules: [
             {
@@ -305,6 +328,7 @@ export default {
           ],
         },
       });
+      console.log('trendChart', trendChart);
     };
 
     return {
@@ -335,14 +359,14 @@ export default {
       display: flex;
       flex-direction: row-reverse;
       .time{
-        display: inline-block;
         width: 80px;
         height: 30px;
-        background: rgba(218, 216, 216, 0.671);
+        background: @blue1;
         font-size: 14px;
         text-align: center;
         line-height: 30px;
-        margin: 10px 0 0 -10px;
+        margin: 15px 20px 0 -10px;
+        border: 1px solid white;
         border-radius: 5px;
       }
       .title{

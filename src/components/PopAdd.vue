@@ -189,7 +189,7 @@ export default {
 <style lang='less' scoped>
 @blue1: rgb(28, 85, 240);
 .wrap{
-  height: 400px;
+  height: 300px;
   width: 100%;
   background: white;
 }
