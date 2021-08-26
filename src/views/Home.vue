@@ -1,3 +1,4 @@
+<!-- home主记账页面 -->
 <template>
   <div class="wrap">
     <div class="header">
@@ -20,7 +21,7 @@
       </div>
     </div>
     <div class="content-wrapper">
-      <van-pull-refresh v-model="isLoading" @refresh="onRefresh">
+      <van-pull-refresh id="pull" v-model="isLoading" @refresh="onRefresh" @touchstart="isRefresh" :disabled="pullRefresh">
         <van-list
           v-model:loading="loading"
           :finished="finished"
@@ -62,6 +63,7 @@ export default {
   setup(){
     const state = reactive({
       isLoading: false,
+      pullRefresh: false,
       loading: false,
       finished: false,
       list: [],
@@ -82,11 +84,12 @@ export default {
     const PopMonthRefToggle = () => {
       PopMonthRef.value.toggle()
     }
-
+    // 显示添加账单的面板
     const addBill = () => {
       console.log('PopAddRef',PopAddRef.value.show)
       PopAddRef.value.toggle()
     }
+    // 根据年月和分类获取账单
     const getBillList = async () => {
       let params = {
         date: formatMonth(state.currentTime),
@@ -102,6 +105,7 @@ export default {
       calcTotal()
       state.loading = false
     }
+    //分别计算账单的收入和支出总额
     const calcTotal = () => {
       state.totalExpense = state.list.reduce((total, cur) => {
         return total + cur.bills.filter((item) => {
@@ -128,6 +132,14 @@ export default {
       getBillList()
       state.isLoading = false
     }
+    //限制能够触发下拉刷新的高度
+    const isRefresh = (e) => {
+      if(e.touches[0].pageY > 500){
+        state.pullRefresh = true
+      }else{
+        state.pullRefresh = false
+      }
+    }
     const selectCategory = (item) => {
       state.currentCategory = item
       getBillList()
@@ -152,6 +164,7 @@ export default {
       getBillList,
       onLoad,
       onRefresh,
+      isRefresh,
       selectCategory,
       selectMonth,
       calcTotal,

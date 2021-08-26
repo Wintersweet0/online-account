@@ -1,4 +1,4 @@
-<!--  -->
+<!-- 统计图表页面，分为类型饼图和日期折线图，类型饼图可以选择收入或者支出类型，日期折线图可以双指放缩时间轴 -->
 <template>
   <div class="wrap">
     <div class="header">
@@ -42,7 +42,7 @@
         v-model="currentTime"
         type="year-month"
         title="选择年月"
-        @confirm="chooseDay"
+        @confirm="chooseDate"
         @cancel="showDay = false"
       />
     </van-popup>
@@ -82,15 +82,15 @@ export default {
       expenseTrendList: [],
       incomeTrendList: [],
     });
-    
-    const chooseDay = async (value) => {
+    // 选择年月进行显示
+    const chooseDate = async (value) => {
       state.currentTime = value
       await getData()
       makeupChart();
       trendChart();
       state.showDay = false
     }
-
+    // 通过网络请求获得按category分类的数据data1和按日期分类的数据data2
     const getData = async () => {
       state.expenseTrendList = new Array(getDateNum(formatMonth(state.currentTime))).fill(0)
       state.incomeTrendList = new Array(getDateNum(formatMonth(state.currentTime))).fill(0)
@@ -193,12 +193,13 @@ export default {
       // state.incomeList =
       // calcTotal()
     };
-
+    //makeup饼图显示收入还是支出
     const changeMakeupType = (type) => {
       state.makeupChartType = type
       makeupChart()
       // console.log('state.payType', state.payType);
     }
+    //trend折线图显示收入还是支出
     const changeTrendType = (type) => {
       state.trendChartType = type
       trendChart()
@@ -210,6 +211,7 @@ export default {
       makeupChart();
       trendChart();
     });
+    // 分类饼图
     const makeupChart = () => {
       let makeupChart = Highcharts.chart("makeupChart", {
         chart:{
@@ -263,7 +265,7 @@ export default {
         ],
       });
     };
-
+    // 时间折线图
     const trendChart = () => {
       let trendChart = new Highcharts.Chart("trendChart", {
         chart:{
@@ -333,7 +335,7 @@ export default {
 
     return {
       ...toRefs(state),
-      chooseDay,
+      chooseDate,
       changeMakeupType,
       changeTrendType,
       formatMonth,

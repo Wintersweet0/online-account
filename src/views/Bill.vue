@@ -1,3 +1,4 @@
+<!-- 账单的详情页面 -->
 <template>
   <div class="bill">
     <van-nav-bar
@@ -33,6 +34,7 @@
         </div>
       </div>
     </div>
+    <!-- 点击编辑可以弹出编辑组件 -->
     <PopAdd 
       ref="PopAddRef"
       :bill="bill"

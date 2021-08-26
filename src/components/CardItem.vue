@@ -1,4 +1,4 @@
-<!--  -->
+<!-- 账目组件，每个组件显示一天时间内的账目 -->
 <template>
   <van-cell-group class="group" inset>
     <div class="header">

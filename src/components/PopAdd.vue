@@ -1,4 +1,4 @@
-<!--  -->
+<!-- 添加或者修改账目的组件 -->
 <template>
   <van-popup v-model:show="show" position="bottom" round closeable close-icon-position="top-left">
     <div class="wrap">
