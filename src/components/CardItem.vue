@@ -11,6 +11,7 @@
     <van-cell v-for="(item, index) in bill.bills"
       :key="index"
       :title="item.category"
+      :icon="icons[item.category]"
       :value="`${item.type == 1 ? '-' : '+'}${Number(item.num).toFixed(2)}`"
       :label="item.remark"
       @click="goToBill(item)"
@@ -37,7 +38,16 @@ export default {
     const route = useRoute()
     const state = reactive({
       expense: 0,
-      income: 0
+      income: 0,
+      icons: {
+        "衣服": "bag-o",
+        "食物": "shop-collect-o",
+        "住宿": "home-o",
+        "交通": "logistics",
+        "其他": "pending-payment",
+        "工资": "cash-on-deliver",
+        "补贴": "balance-pay",
+      }
     })
 
     const calcItem = () => {
@@ -102,5 +112,15 @@ export default {
       margin-left: 25px;
     }
   }
+}
+</style>
+<style>
+:root{
+  --van-cell-border-color: gray;
+  --van-cell-horizontal-padding: 35px;
+  --van-cell-font-size: 18px;
+  --van-cell-icon-size: 24px;
+  --van-cell-label-margin-top: 15px;
+  --van-cell-label-font-size: 14px;
 }
 </style>
